@@ -1,0 +1,396 @@
+#Run_ASC.R#
+#load ASC code#
+source("./asc_0.1.4.R")#
+#
+#Load libraries#
+library(NOISeq) # simple TMM normalization#
+library(plyr)#
+#
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chaetoceros-affinis-CCMP159_cds_counts_orthoID.txt"#
+#
+#load the counts_orthoID.txt file#
+t= read.table(file, header=T) #open the file and read in data#
+t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup#
+#
+#make orthogroups into row names and delete Orthogroup column#
+rownames(t.final)<-t.final$Orthogroup#
+t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]
+D <- DGE(t.final[,1], t.final[,4])
+plot(t.final[,1])
+plot(t.final[,4]/t.final[,1])
+plot(log(t.final[,4],base=2), log(t.final[,4]/t.final[,1], base=2))
+plot(log(t.norm[,4],base=2), log(t.norm[,4]/t.norm[,1], base=2))
+t.norm = tmm(t.final)
+head(t.norm)
+boxplot(t.norm, ylim=c(0,10000))
+plot(log(t.norm[,4],base=2), log(t.norm[,4]/t.norm[,1], base=2))
+t.norm[,4]
+D <- DGE(t.norm[,4], t.norm[,1])
+warnings()
+D <- DGE(t.final[,4], t.final[,1])
+D <- DGE(as.vector(t.final[,4]), as.vector(t.final[,1]))
+t.final[,1]
+t.final[,4]
+D <- DGE(as.vector(t.final[,4]), as.vector(t.final[,1]))
+#Run_ASC.R#
+#load ASC code#
+source("./asc_0.1.4.R")#
+#
+#Load libraries#
+library(NOISeq) # simple TMM normalization#
+library(plyr)#
+#
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chaetoceros-affinis-CCMP159_cds_counts_orthoID.txt"#
+#
+#load the counts_orthoID.txt file#
+t= read.table(file, header=T) #open the file and read in data#
+t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup#
+#
+#make orthogroups into row names and delete Orthogroup column#
+rownames(t.final)<-t.final$Orthogroup#
+t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]
+##Exploratory analyses#
+boxplot(t.final, ylim= c(0,15000))#
+plot(log(t.final[,4],base=2), log(t.final[,4]/t.final[,1], base=2))#
+#TMM normalize and recheck boxplot distributution#
+t.norm = tmm(t.final)#
+boxplot(t.norm, ylim=c(0,10000))#
+plot(log(t.norm[,4],base=2), log(t.norm[,4]/t.norm[,1], base=2))
+D <- DGE(as.vector(t.final[,4]), as.vector(t.final[,1]))
+min(t.final[,4])
+max(t.final[,4])
+min(t.final[,1])
+max(t.final[,1])
+source("./asc_0.1.4.R")#
+load("exampleData.rda")#
+### The example data set has two long vectors, X1 and X2, each of 20,000 genes#
+### X1 and X2 must of the same length and should represent genes in the same order#
+### To estimate the posterior mean of log fold change #
+D <- DGE(X1,X2)
+D <- DGE(t.final[,4],t.final[,1])
+X1 = t.final[,1]
+X2 = t.final[,4]
+D <- DGE(X1,X2)
+length(X1)
+length(X2)
+plot(X1,X2)
+plot(log(t.final[,4],base=2), log(t.final[,4]/t.final[,1], base=2))
+plot(log(t.norm[,4],base=2), log(t.norm[,4]/t.norm[,1], base=2))
+k[1]
+la
+source("./asc_0.1.4.R")#
+load("exampleData.rda")#
+### The example data set has two long vectors, X1 and X2, each of 20,000 genes#
+### X1 and X2 must of the same length and should represent genes in the same order#
+### To estimate the posterior mean of log fold change #
+D <- DGE(X1,X2)#
+### This function returns the estimated log fold change, as well as the hyperparamters#
+####
+### identify a subset of genes of interest.#
+### For example, those with log fold change greater than 0.5#
+k1=which(abs(D$delta[,1])>.5)#
+D$delta[k1]
+k1
+postp1=PostProb(D$delta[k1,],X1[k1],X2[k1],D$pars,d0=2)#
+round(postp1,3)
+### find the top 10 genes with the greatest estimated fold change#
+k2=order(-abs(D$delta[,1]))[1:10]
+k2
+postp2=PostProb(D$delta[k2,],X1[k2],X2[k2],D$pars,d0=1.5)#
+round(postp2,3)
+X1 = as.vector(t.final[,1])
+X2 = as.vector(t.final[,4])
+head(X1)
+head(X2)
+load("exampleData.rda")
+head(X2)
+head(X2)
+X1 = t.final[,1]
+head(X1)
+X1 = t.final$MMETSP0088
+head(X1)
+names(X1) = rownames(t.final)
+head(X1)
+X2 = t.final[,4]
+names(X2) = rownames(t.final)
+head(X2)
+D <- DGE(X1,X2)
+load("exampleData.rda")
+which(X1 == 0)
+which(X1 == 0)[1:10]
+X1[5]
+which(X2 ==0)[1:20]
+X1[1:12]
+X2[1:12]
+D <- DGE(X1,X2)
+D
+X1 = t.final$MMETSP0088#
+names(X1) = rownames(t.final)#
+X2 = t.final$MMETSP0092#
+names(X2) = rownames(t.final)
+head(X1)
+head(X2)
+hist(X1)
+boxplot(X1,X2)
+boxplot(X1,X2, ylim=c(0,10000))
+load("exampleData.rda")
+boxplot(X1,X2, ylim=c(0,10000))
+boxplot(X1,X2, ylim=c(0,1000))
+boxplot(X1,X2, ylim=c(0,100))
+X1 = t.final$MMETSP0088#
+names(X1) = rownames(t.final)#
+X2 = t.final$MMETSP0092#
+names(X2) = rownames(t.final)#
+boxplot(X1,X2, ylim=c(0,10000))
+D <- DGE(X1,X2)
+getPostDiff(X1,X2)
+getPars(X1,X2)
+pars = getPars(X1,X2)
+getPostDiff(X1,X2, pars)
+getPostDiff(X1,X2, pars=pars)
+#Calc_FC#
+#Load libraries#
+library(NOISeq) # simple TMM normalization#
+library(plyr)#
+#
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chaetoceros-affinis-CCMP159_cds_counts_orthoID.txt"#
+#
+#load the counts_orthoID.txt file#
+t= read.table(file, header=T) #open the file and read in data#
+t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup#
+#
+#make orthogroups into row names and delete Orthogroup column#
+rownames(t.final)<-t.final$Orthogroup#
+t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]#
+#
+##Exploratory analyses#
+boxplot(t.final, ylim= c(0,15000))#
+plot(log(t.final[,4],base=2), log(t.final[,4]/t.final[,1], base=2))#
+#
+#TMM normalize and recheck boxplot distributution#
+TMM = tmm(t.final)#
+boxplot(TMM, ylim=c(0,10000))#
+plot(log(TMM[,4],base=2), log(TMM[,4]/TMM[,1], base=2))
+control <- TMM[,1]
+norm.data <- log(sweep(TMM, 1, control, "/"), 2) #Divide by control.mean and log2 transform
+head(norm.data)
+norm.data <- norm.data[ ,-1] # Remove control samples
+head(norm.data)
+boxplot(norm.data)
+length(which(abs(norm.data[,3]) > 1))
+bfc <- norm.data[which(abs(norm.data[,3]) > 1), 3]
+head(bfc)
+#find all filenames from count directory with "orthoID"#
+dir="~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/"#
+files=list.files(dir, "orthoID")#
+length(files)
+files[1]
+#load the counts_orthoID.txt file#
+t= read.table(files[1], header=T) #open the file and read in data#
+t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup
+t= read.table(paste0(dir,files[1]), header=T) #open the file and read in data
+t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup
+t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup
+#make orthogroups into row names and delete Orthogroup column#
+rownames(t.final)<-t.final$Orthogroup#
+t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]#
+##Exploratory analyses#
+boxplot(t.final, ylim= c(0,15000))#
+plot(log(t.final[,4],base=2), log(t.final[,4]/t.final[,1], base=2))
+boxplot(t.final, ylim= c(0,15000))
+#TMM normalize and recheck boxplot distributution#
+TMM = tmm(t.final)#
+boxplot(TMM, ylim=c(0,10000))
+plot(log(TMM[,4],base=2), log(TMM[,4]/TMM[,1], base=2))
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Alexandrium-monilatum-CCMP3105_cds_counts_orthoID.txt"
+control = "MMETSP0093"
+co2 = "MMETSP0097"
+t= read.table(file, header=T) #open the file and read in data
+t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup
+t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup
+#make orthogroups into row names and delete Orthogroup column#
+rownames(t.final)<-t.final$Orthogroup#
+t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]
+boxplot(t.final, ylim= c(0,15000))
+plot(log(t.final[,4],base=2), log(t.final[,4]/t.final[,1], base=2))
+#TMM normalize and recheck boxplot distributution#
+TMM = tmm(t.final)#
+boxplot(TMM, ylim=c(0,10000))
+plot(log(t.final[,co2],base=2), log(t.final[,co2]/t.final[,control], base=2))
+plot(log(TMM[,co2],base=2), log(TMM[,co2]/TMM[,control], base=2))
+control.vals <- TMM[,control]
+norm.data <- log(sweep(TMM, 1, control.vals, "/"), 2) #Divide by control.mean and log2 transform
+norm.data <- norm.data[ ,-control] # Remove control samples
+norm.data <- norm.data[ ,-which(colnames(TMM) ==control)] # Remove control samples
+head(norm.data)
+dim(norm.data)
+boxplot(norm.data)
+bfc <- norm.data[which(abs(norm.data[,co2]) > 1), co2]
+head(bfc)
+length(bfc)
+calc_FC_CO2 <- function(file, control, co2){	#
+	#load the counts_orthoID.txt file#
+	t= read.table(file, header=T) #open the file and read in data#
+	t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+	t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup#
+	#make orthogroups into row names and delete Orthogroup column#
+	rownames(t.final)<-t.final$Orthogroup#
+	t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]#
+	##Exploratory analyses#
+	#boxplot(t.final, ylim= c(0,15000))#
+	#plot(log(t.final[,co2],base=2), log(t.final[,co2]/t.final[,control], base=2))#
+	#TMM normalize and recheck boxplot distributution#
+	TMM = tmm(t.final)#
+	#boxplot(TMM, ylim=c(0,10000))#
+	#plot(log(TMM[,co2],base=2), log(TMM[,co2]/TMM[,control], base=2))#
+	## Calculate log2 ratios with Control#
+	control.vals <- TMM[,control]#
+	norm.data <- log(sweep(TMM, 1, control.vals, "/"), 2) #Divide by control.mean and log2 transform#
+	norm.data <- norm.data[ ,-which(colnames(TMM) ==control)] # Remove control samples#
+	boxplot(norm.data)#
+	bfc <- norm.data[which(abs(norm.data[,co2]) > 1), co2]#
+	print(paste(bfc, "= genes with >2FC"))#
+	norm.data#
+}
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Alexandrium-monilatum-CCMP3105_cds_counts_orthoID.txt"#
+control = "MMETSP0093"#
+co2 = "MMETSP0097"
+norm.data = calc_FC_CO2(file, control, co2)
+calc_FC_CO2 <- function(file, control, co2){	#
+	#load the counts_orthoID.txt file#
+	t= read.table(file, header=T) #open the file and read in data#
+	t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+	t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup#
+	#make orthogroups into row names and delete Orthogroup column#
+	rownames(t.final)<-t.final$Orthogroup#
+	t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]#
+	##Exploratory analyses#
+	#boxplot(t.final, ylim= c(0,15000))#
+	#plot(log(t.final[,co2],base=2), log(t.final[,co2]/t.final[,control], base=2))#
+	#TMM normalize and recheck boxplot distributution#
+	TMM = tmm(t.final)#
+	#boxplot(TMM, ylim=c(0,10000))#
+	#plot(log(TMM[,co2],base=2), log(TMM[,co2]/TMM[,control], base=2))#
+	## Calculate log2 ratios with Control#
+	control.vals <- TMM[,control]#
+	norm.data <- log(sweep(TMM, 1, control.vals, "/"), 2) #Divide by control.mean and log2 transform#
+	norm.data <- norm.data[ ,-which(colnames(TMM) ==control)] # Remove control samples#
+	#boxplot(norm.data)#
+	bfc <- norm.data[which(abs(norm.data[,co2]) > 1), co2]#
+	print(paste(length(bfc), "= genes with >2FC"))#
+	norm.data#
+}
+norm.data = calc_FC_CO2(file, control, co2)
+head(norm.data)
+calc_FC_CO2 <- function(file, control, co2){	#
+	#load the counts_orthoID.txt file#
+	t= read.table(file, header=T) #open the file and read in data#
+	t2=t[-which(is.na(t$Orthogroup)),] #get rid of genes that were not placed in Orthogroup#
+	t.final=ddply(t2,"Orthogroup",numcolwise(sum)) #sum counts for contigs in same orthogroup#
+	#make orthogroups into row names and delete Orthogroup column#
+	rownames(t.final)<-t.final$Orthogroup#
+	t.final <- t.final[,-which(colnames(t.final)=="Orthogroup")]#
+	##Exploratory analyses#
+	#boxplot(t.final, ylim= c(0,15000))#
+	#plot(log(t.final[,co2],base=2), log(t.final[,co2]/t.final[,control], base=2))#
+	#TMM normalize and recheck boxplot distributution#
+	TMM = tmm(t.final)#
+	#boxplot(TMM, ylim=c(0,10000))#
+	#plot(log(TMM[,co2],base=2), log(TMM[,co2]/TMM[,control], base=2))#
+	## Calculate log2 ratios with Control#
+	control.vals <- TMM[,control]#
+	norm.data <- log(sweep(TMM, 1, control.vals, "/"), 2) #Divide by control.mean and log2 transform#
+	norm.data <- norm.data[ ,-which(colnames(TMM) ==control)] # Remove control samples#
+	#boxplot(norm.data)#
+	bfc <- norm.data[which(abs(norm.data[,co2]) > 1), co2]#
+	print(paste(length(bfc), "= genes with >2FC under CO2"))#
+	norm.data#
+}
+files
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chaetoceros-affinis-CCMP159_cds_counts_orthoID.txt"#
+control = "MMETSP0088"#
+co2 = "MMETSP0092"#
+norm.data = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Alexandrium-monilatum-CCMP3105_cds_counts_orthoID.txt"#
+control = "MMETSP0093"#
+co2 = "MMETSP0097"#
+norm.data.Amo = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chaetoceros-affinis-CCMP159_cds_counts_orthoID.txt"#
+control = "MMETSP0088"#
+co2 = "MMETSP0092"#
+norm.data.Caf = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chrysochromulina-polylepis-CCMP1757_cds_counts_orthoID.txt"#
+control = "MMETSP0143"#
+co2 = "MMETSP0147"#
+norm.data.Cpo = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Gephyrocapsa-oceanica-RCC1303_cds_counts_orthoID.txt"#
+control = "MMETSP1363"#
+co2 = "MMETSP1364"#
+norm.data.Goc = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Heterosigma-akashiwo-CCMP2393_cds_counts_orthoID.txt"#
+control = "MMETSP0292"#
+co2 = "MMETSP0296"#
+norm.data.Hak = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Prorocentrum-minimum-CCMP1329_cds_counts_orthoID.txt"#
+control = "MMETSP0053"#
+co2 = "MMETSP0057"#
+norm.data.Pmi = calc_FC_CO2(file, control, co2)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Alexandrium-monilatum-CCMP3105_cds_counts_orthoID.txt"#
+control = "MMETSP0093"#
+co2 = "MMETSP0097"
+up.Amo <- norm.data.Amo[which(norm.data.Amo[,co2] > 1), co2]
+down.Amo <- norm.data.Amo[which(norm.data.Amo[,co2] < -1), co2]
+up.Amo
+down.Amo
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chaetoceros-affinis-CCMP159_cds_counts_orthoID.txt"#
+control = "MMETSP0088"#
+co2 = "MMETSP0092"
+up.Caf <- norm.data.Caf[which(norm.data.Caf[,co2] > 1), co2]#
+down.Caf <- norm.data.Caf[which(norm.data.Caf[,co2] < -1), co2]
+length(up.Caf)
+length(down.Caf)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Chrysochromulina-polylepis-CCMP1757_cds_counts_orthoID.txt"#
+control = "MMETSP0143"#
+co2 = "MMETSP0147"
+up.Cpo <- norm.data.Cpo[which(norm.data.Cpo[,co2] > 1), co2]#
+down.Cpo <- norm.data.Cpo[which(norm.data.Cpo[,co2] < -1), co2]
+length(u.Cpo)
+length(up.Cpo)
+length(down.Cpo)
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Gephyrocapsa-oceanica-RCC1303_cds_counts_orthoID.txt"#
+control = "MMETSP1363"#
+co2 = "MMETSP1364"
+up.Goc <- norm.data.Goc[which(norm.data.Goc[,co2] > 1), co2]
+down.Goc <- norm.data.Goc[which(norm.data.Goc[,co2] < -1), co2]
+up.Goc
+down.Goc
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Heterosigma-akashiwo-CCMP2393_cds_counts_orthoID.txt"#
+control = "MMETSP0292"#
+co2 = "MMETSP0296"
+up.Hak <- norm.data.Hak[which(norm.data.Hak[,co2] > 1), co2]#
+down.Hak <- norm.data.Hak[which(norm.data.Hak[,co2] < -1), co2]
+up.Pmi <- norm.data.Pmi[which(norm.data.Pmi[,co2] > 1), co2]
+file = "~/Desktop/CO2_MMETSP/DiffExp_CO2/counts/Prorocentrum-minimum-CCMP1329_cds_counts_orthoID.txt"#
+control = "MMETSP0053"#
+co2 = "MMETSP0057"
+up.Pmi <- norm.data.Pmi[which(norm.data.Pmi[,co2] > 1), co2]
+down.Pmi <- norm.data.Pmi[which(norm.data.Pmi[,co2] < -1), co2]
+which(names(up.Cpo) %in% names(up.Goc))
+names(up.Cpo) %in% names(up.Goc)
+names(up.Cpo)[which(names(up.Cpo) %in% names(up.Goc))]
+names(down.Cpo)[which(names(down.Cpo) %in% names(down.Goc))]
+names(up.Amo)[which(names(up.Amo) %in% names(up.Pmi))]
+names(down.Amo)[which(names(down.Amo) %in% names(down.Pmi))]
+length(up.Cpo)
+length(up.Goc)
+length(down.Cpo)
+length(down.Goc)
+library(gplot)
+library(gplots)
+library(gplots)
+library(gplots)
+library(ggplot2)
